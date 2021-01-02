@@ -1,0 +1,17 @@
+E-Voting Fakultas Teknik Universitas Teknologi Sumbawa
+    Version 0.0.1 Alpha
+        - Adding Login system
+        - Adding Template for Admin
+        - Adding template for homepage election
+
+    Version 0.0.2 Alpha
+        - Adding Middleware for Roles Admin
+        - Adding New Module (Voting)
+        - Fixing Structural Public Folder
+
+
+
+
+
+
+Kuronekosan@2021
