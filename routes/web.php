@@ -22,8 +22,12 @@ Auth::routes([
 
 // User Controller
 Route::get('/', 'DashboardController@home')->name('home');
-Route::get('/masuk', 'DashboardController@index')->name('masuk')->middleware('votingcheck');
-Route::post('/masuk2', 'DashboardController@masuk');
+Route::get('/masuk', 'Auth\VotersLoginController@showLoginForm')->name('masuk')->middleware('votingcheck');
+Route::post('/masuk2', 'Auth\VotersLoginController@login');
+Route::post('/logout2', 'Auth\VotersLoginController@logout')->name('logoutvoters');
+Route::get('/beranda', 'DashboardController@beranda')->name('beranda');
+Route::get('/register', 'DashboardController@register_index')->name('register');
+Route::post('/register_post', 'DashboardController@register_post');
 
 // Admin Controller
     //Voting Controller
@@ -37,7 +41,12 @@ Route::post('/masuk2', 'DashboardController@masuk');
         Route::get('/administrator/kandidat', 'AdminController@kandidat_index')->name('adminKandidat');
         Route::post('/administrator/kandidat/addtim', 'AdminController@kandidat_addtim');
         Route::post('/administrator/kandidat/deltim', 'AdminController@kandidat_deltim');
-        Route::get('/administrator/kandidat/edittim/{id}', 'AdminController@kandidat_edittim')->name('editTim');
-        Route::post('/administrator/kandidat/tim', 'AdminController@kandidat_edittim_post');
+        Route::post('/administrator/kandidat/edittim', 'AdminController@kandidat_edittim');
         Route::post('/administrator/kandidat/addkandidat', 'AdminController@kandidat_addkandidat');
+        Route::post('/administrator/kandidat/editkandidat', 'AdminController@kandidat_editkandidat');
+        Route::post('/administrator/kandidat/delkandidat', 'AdminController@kandidat_delkandidat');
         
+    // Voters Controller
+        Route::get('/admin/voters/verif', 'AdminController@voter_verif')->name('adminVotersVer');
+        Route::get('/admin/voters/unverif', 'AdminController@voter_unverif')->name('adminVotersunVer');
+        Route::post('/admin/voters/unverif_post', 'AdminController@voter_unverif_post');

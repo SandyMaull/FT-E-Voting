@@ -7,13 +7,23 @@ use App\Voting;
 use App\Helpers\CustomHelper;
 use App\Kandidat;
 use App\Tim;
+use App\Voters;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Carbon;
 
 class AdminController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['only' => ['votingpageedit','votingpage_post']]);
+        $this->middleware('admin', ['only' => [
+            'votingpageedit', 'votingpage_post',
+            'kandidat_addtim', 'kandidat_deltim',
+            'kandidat_edittim', 'kandidat_addkandidat',
+            'kandidat_editkandidat', 'kandidat_delkandidat',
+
+        ]]);
     }
 
     public function redirectindex()
@@ -153,6 +163,20 @@ class AdminController extends Controller
         $tim = Tim::where('id', $request->tim_id)->first();
         $kandidat = Kandidat::where('tim_id', $request->tim_id)->get();
         foreach ($kandidat as $kand) {
+            $orig = public_path('image/'.$kand->image);
+            $resize = public_path('/image/kecil/'.$kand->image);
+            if(File::exists($orig)){
+                File::delete($orig);
+                if (File::exists($resize)) {
+                    File::delete($resize);
+                }
+                else {
+                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+                }
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+            }
             $del_kandid = Kandidat::destroy($kand->id);
             if ($del_kandid) {
                 continue;
@@ -170,14 +194,30 @@ class AdminController extends Controller
         }
     }
 
-    public function kandidat_edittim($id)
+    public function kandidat_edittim(Request $request)
     {
-        $tim = Tim::where('id', $id)->first();
-        $kandidat = Kandidat::where('tim_id', $id)->get();
-        return view('admin.edit.kandidat',[
-            'tim' => $tim,
-            'kandidat' => $kandidat
+        $request->validate([
+            'nama_tim' => 'required',
+            'semboyan_tim' => 'required',
+            'tim_id' => 'required',
+        ],
+        [
+            'nama_tim.required' => 'Nama Tim dibutuhkan!',
+            'semboyan_tim.required' => 'Semboyan Tim dibutuhkan!',
+            'tim_id.required' => 'ID Tim dibutuhkan!',
+            
         ]);
+        // dd($request->all());
+        $tim = Tim::where('id', $request->tim_id)->update([
+            'nama_tim' => $request->nama_tim,
+            'semboyan' => $request->semboyan_tim
+        ]);
+        if ($tim) {
+            return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
+        }
+        else {
+            return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Dihapus! Check Database Connection.']);
+        }
     }
 
     public function kandidat_addkandidat(Request $request)
@@ -191,7 +231,7 @@ class AdminController extends Controller
             'pengalaman_kandidat' => 'required',
             'tim_id' => 'required',
             'voting_id' => 'required',
-            'image_kandidat' => 'required',
+            'image_kandidat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ],
         [
             'nama_kandidat.required' => 'Nama Kandidat dibutuhkan!',
@@ -203,13 +243,210 @@ class AdminController extends Controller
             'tim_id.required' => 'Tim ID dibutuhkan!',
             'voting_id.required' => 'Voting ID dibutuhkan!',
             'image_kandidat.required' => 'Gambar Kandidat dibutuhkan!',
+            'image_kandidat.max' => 'Gambar Kandidat maximal size 2048Mb!',
             
         ]);
-        dd($request->all());
+        if($file = $request->file('image_kandidat')) {
+                $name = Carbon::now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('/image');
+                $canvas = Image::canvas(102, 102);
+                $resizeImage  = Image::make($file)->resize(102, 102, function($constraint) {
+                    $constraint->aspectRatio();
+                })->trim();
+                $canvas->insert($resizeImage, 'center');
+                $canvas->save($destinationPath . '/kecil'. '/' . $name);
+                if($file->move($destinationPath, $name)) {
+                    $kandidat = new Kandidat;
+                    $kandidat->nama = $request->nama_kandidat;
+                    $kandidat->nim = $request->nim_kandidat;
+                    $kandidat->jurusan = $request->jurusan_kandidat;
+                    $kandidat->visi = $request->visi_kandidat;
+                    $kandidat->misi = $request->misi_kandidat;
+                    $kandidat->pengalaman = $request->pengalaman_kandidat;
+                    $kandidat->image = $name;
+                    $kandidat->voting_id = $request->voting_id;
+                    $kandidat->tim_id = $request->tim_id;
+                    $kandidat_db = $kandidat->save();
+                    if ($kandidat_db) {
+                        return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambahkan!']);
+                    }
+                    else {
+                        return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Database Connection.']);
+                    }
+
+                    return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambah!']);
+                }
+                else {
+                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check File Permission.']);
+                }
+        }
+        else {
+            return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Format Gambar yg dikirim.']);
+        }
+    }
+
+    public function kandidat_editkandidat(Request $request)
+    {
+        $request->validate([
+            'nama_kandidat' => 'required',
+            'nim_kandidat' => 'required',
+            'jurusan_kandidat' => 'required',
+            'visi_kandidat' => 'required',
+            'misi_kandidat' => 'required',
+            'pengalaman_kandidat' => 'required',
+            'tim_id' => 'required',
+            'kandidat_id' => 'required',
+            'voting_id' => 'required',
+        ],
+        [
+            'nama_kandidat.required' => 'Nama Kandidat dibutuhkan!',
+            'nim_kandidat.required' => 'NIM Kandidat dibutuhkan!',
+            'jurusan_kandidat.required' => 'Jurusan Kandidat dibutuhkan!',
+            'visi_kandidat.required' => 'Visi Kandidat dibutuhkan!',
+            'misi_kandidat.required' => 'Misi Kandidat dibutuhkan!',
+            'pengalaman_kandidat.required' => 'Pengalaman Kandidat dibutuhkan!',
+            'tim_id.required' => 'Tim ID dibutuhkan!',
+            'voting_id.required' => 'Voting ID dibutuhkan!',
+            'kandidat_id.required' => 'Kandidat ID dibutuhkan!',
+            
+        ]);
+        $kandidat = Kandidat::where('id', $request->kandidat_id)->first();
+        if ($request->edit_image == "on") {
+            $request->validate([
+                'image_kandidat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ],
+            [
+                'image_kandidat.required' => 'Gambar Kandidat dibutuhkan!',
+                'image_kandidat.max' => 'Gambar Kandidat maximal size 2048Mb!',
+                
+            ]);
+            $orig = public_path('image/'.$kandidat->image);
+            $resize = public_path('/image/kecil/'.$kandidat->image);
+            if(File::exists($orig)){
+                File::delete($orig);
+                if (File::exists($resize)) {
+                    File::delete($resize);
+                }
+                else {
+                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+                }
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+            }
+            if($file = $request->file('image_kandidat')) {
+                $name = Carbon::now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('/image');
+                $canvas = Image::canvas(102, 102);
+                $resizeImage  = Image::make($file)->resize(102, 102, function($constraint) {
+                    $constraint->aspectRatio();
+                })->trim();
+                $canvas->insert($resizeImage, 'center');
+                $canvas->save($destinationPath . '/kecil'. '/' . $name);
+                if(! $file->move($destinationPath, $name)) {
+                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check File Permission.']);
+                }
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Format Gambar yg dikirim.']);
+            }
+            $kandidat = Kandidat::where('id', $request->kandidat_id)->update([
+                'nama' => $request->nama_kandidat,
+                'nim' => $request->nim_kandidat,
+                'jurusan' => $request->jurusan_kandidat,
+                'visi' => $request->visi_kandidat,
+                'misi' => $request->misi_kandidat,
+                'pengalaman' => $request->pengalaman_kandidat,
+                'image' => $name,
+            ]);
+            if ($kandidat) {
+                return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Dihapus! Check Database Connection.']);
+            }
+        }
+        else {
+            $kandidat = Kandidat::where('id', $request->kandidat_id)->update([
+                'nama' => $request->nama_kandidat,
+                'nim' => $request->nim_kandidat,
+                'jurusan' => $request->jurusan_kandidat,
+                'visi' => $request->visi_kandidat,
+                'misi' => $request->misi_kandidat,
+                'pengalaman' => $request->pengalaman_kandidat,
+            ]);
+            if ($kandidat) {
+                return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Dihapus! Check Database Connection.']);
+            }
+        }
+    }
+
+    public function kandidat_delkandidat(Request $request)
+    {
+        $request->validate([
+            'kand_id' => 'required',
+        ],
+        [
+            'kand_id.required' => 'ID Kandidat dibutuhkan!',
+            
+        ]);
+        
+        $kandidat = Kandidat::where('id', $request->kand_id)->first();
+        $orig = public_path('image/'.$kandidat->image);
+        $resize = public_path('/image/kecil/'.$kandidat->image);
+        if(File::exists($orig)){
+            File::delete($orig);
+            if (File::exists($resize)) {
+                File::delete($resize);
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+            }
+        }
+        else {
+            return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+        }
+        $hapus = Kandidat::destroy($request->kand_id);
+        if ($hapus) {
+            return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Dihapus!']);
+        }
+        else {
+            return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Dihapus! Check Database Connection.']);
+        }
     }
     
-    public function kandidat_edittim_post(Request $request)
+    public function voter_verif()
     {
-        dd($request->all());
+        $voter = Voters::where('verified', 1)->simplePaginate(15);
+        return view('admin.voters_ver', ['verif' => $voter]);
+    }
+
+    public function voter_unverif()
+    {
+        $voter = Voters::where('verified', 0)->simplePaginate(15);
+        return view('admin.voters_unv', ['unverif' => $voter]);
+    }
+
+    public function voter_unverif_post(Request $request)
+    {
+        $request->validate([
+            'voters_id' => 'required',
+        ],
+        [
+            'voters_id.required' => 'ID Voters dibutuhkan!',
+            
+        ]);
+        $voting = Voters::where('id', $request->voters_id)->update([
+            'verified' => 1,
+        ]);
+        if ($voting) {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
+        }
+        else {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Check Database Connection.']);
+        }
     }
 }

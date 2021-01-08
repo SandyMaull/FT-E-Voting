@@ -56,13 +56,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                        <a id="datavoters_notverified" href="#" class="nav-link">
+                        <a id="datavoters_notverified" href="{{ url('/admin/voters/unverif') }}" class="nav-link">
                             <i class="fas fa-user-times nav-icon"></i>
                             <p>Belum Terverifikasi</p>
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a id="datavoters_verified" href="#" class="nav-link">
+                        <a id="datavoters_verified" href="{{ url('/admin/voters/verif') }}" class="nav-link">
                             <i class="fas fa-user-check nav-icon"></i>
                             <p>Terverifikasi</p>
                         </a>

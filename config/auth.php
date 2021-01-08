@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'voter' => [
+            'driver' => 'session',
+            'provider' => 'voters',
+        ]
     ],
 
     /*
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+
+        'voters' => [
+            'driver' => 'eloquent',
+            'model' => App\Voters::class,
         ],
 
         // 'users' => [
@@ -99,6 +109,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        // 'voters' => [
+        //     'provider' => 'voters',
+        //     'table' => 'password_resets',
+        //     'expire' => 60,
+        //     'throttle' => 60,
+        // ],
     ],
 
     /*

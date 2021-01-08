@@ -12,6 +12,7 @@
     <title>
         @yield('title')
     </title>
+    @yield('css')
 </head>
 <body>
     <div class="loading"></div>
@@ -27,7 +28,7 @@
                             <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
                             <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                             <br>
-                            <small>Powered by Kuronekosan - Direktorat Sistem dan Teknologi Informasi - Universitas Teknologi Sumbawa</small>
+                            <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small>
                         </div>
                     @else
                         @isset($pageawal)
@@ -39,7 +40,7 @@
                                 <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
                                 <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                                 <br>
-                                <small>Powered by Kuronekosan - Direktorat Sistem dan Teknologi Informasi - Universitas Teknologi Sumbawa</small>
+                                <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small>
                             </div>
                         @endisset
                         @yield('body')
@@ -54,6 +55,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
     <script src="{{asset('js/particles.js')}}"></script>
     <script src="{{asset('js/particle-app.js')}}"></script>
+    @yield('script')
     @if (Session::get('periode'))
     @else
         @isset($pageawal)
