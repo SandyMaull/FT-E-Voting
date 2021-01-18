@@ -25,10 +25,10 @@
                     @if ($message = Session::get('periode'))
                         <h1>{{$message}}</h1>
                         <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-                            <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+                            <img class="img-footer" src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
                             {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
-                            <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
-                            <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
+                            <img class="img-footer" src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
+                            <img class="img-footer" src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                             <br>
                             {{-- <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small> --}}
                         </div>
@@ -38,10 +38,10 @@
                             <a type="button" id="button-awal" class="btn btn-primary" href="{{ url('/masuk') }}">Lanjut</a>
                             <br><br>
                             <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-                                <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+                                <img class="img-footer" src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
                                 {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
-                                <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
-                                <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
+                                <img class="img-footer" src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
+                                <img class="img-footer" src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                                 <br>
                                 {{-- <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small> --}}
                             </div>
