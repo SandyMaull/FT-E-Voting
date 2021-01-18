@@ -23,7 +23,6 @@ class DashboardController extends Controller
 
     public function home()
     {
-        // return view('tampilan.layouts.app',['pageawal' => TRUE]);
         return view('tampilan.layouts.app')->with('pageawal',TRUE);
     }
 
@@ -36,7 +35,7 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'nim' => 'required|max:2048',
+            'nim' => 'required|max:13',
             'prodi' => 'required',
             'password' => 'required|min:8',
             'telp' => 'required',
@@ -53,13 +52,14 @@ class DashboardController extends Controller
             'siakadfoto.required' => 'Foto Siakad dibutuhkan!',
             'siakadfoto.max' => 'Foto Siakad maximal size 2MB!',
         ]);
-        $helper_nim = CustomHelper::UniqueVoters('nim',$request->nim);
-        $helper_telp = CustomHelper::UniqueVoters('nmor_wa', $request->telp);
+        $helper_nim = CustomHelper::UniqueVoters($request->nim, 'nim');
+        $helper_telp = CustomHelper::UniqueVoters($request->telp, 'nmor_wa');
         if ($helper_nim && $helper_telp) {
             $token = mt_rand(100000, 999999);
-            $helper_token = CustomHelper::UniqueVoters('token', $request->token);
-            if (!$helper_token) {
+            $helper_token = CustomHelper::UniqueVoters($token, 'token');
+            while(!$helper_token) {
                 $token = mt_rand(100000, 999999);
+                $helper_token = CustomHelper::UniqueVoters($token, 'token');
             }
             if($file = $request->file('siakadfoto')) {
                 $name = Carbon::now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();

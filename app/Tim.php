@@ -8,7 +8,7 @@ class Tim extends Model
 {
     protected $table = 'tim';
     protected $fillable = [
-        'nama_tim', 'semboyan'
+        'nama_tim', 'semboyan', 'pemilihan'
     ];
 
     public function kandidat(){

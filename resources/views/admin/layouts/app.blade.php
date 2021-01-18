@@ -7,7 +7,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>{{ config('app.name', 'Laravel') }} - @yield('title')</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/hokusei-logo.png') }}" sizes="16x16">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('e-vottry.png') }}" sizes="16x16">
+
 
 
     <!-- Font Awesome Icons -->

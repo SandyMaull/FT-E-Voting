@@ -40,7 +40,7 @@ Route::post('/register_post', 'DashboardController@register_post');
     // Kandidat Controller
         Route::get('/administrator/kandidat', 'AdminController@kandidat_index')->name('adminKandidat');
         Route::post('/administrator/kandidat/addtim', 'AdminController@kandidat_addtim');
-        Route::post('/administrator/kandidat/deltim', 'AdminController@kandidat_deltim');
+        // Route::post('/administrator/kandidat/deltim', 'AdminController@kandidat_deltim');
         Route::post('/administrator/kandidat/edittim', 'AdminController@kandidat_edittim');
         Route::post('/administrator/kandidat/addkandidat', 'AdminController@kandidat_addkandidat');
         Route::post('/administrator/kandidat/editkandidat', 'AdminController@kandidat_editkandidat');

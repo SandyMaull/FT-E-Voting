@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('e-vottry.png') }}" sizes="16x16">
     @isset($pageawal)
         <title>E-Voting</title>
     @endisset
@@ -24,23 +25,25 @@
                     @if ($message = Session::get('periode'))
                         <h1>{{$message}}</h1>
                         <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-                            <img src="{{ asset('bem.png') }}" alt="Logo BEM"/>
+                            <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+                            {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
                             <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
                             <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                             <br>
-                            <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small>
+                            {{-- <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small> --}}
                         </div>
                     @else
                         @isset($pageawal)
                             <h3 id="demo"></h3>
-                            <a type="button" id="button" class="btn btn-primary" href="{{ url('/masuk') }}">Lanjut</a>
+                            <a type="button" id="button-awal" class="btn btn-primary" href="{{ url('/masuk') }}">Lanjut</a>
                             <br><br>
                             <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-                                <img src="{{ asset('bem.png') }}" alt="Logo BEM"/>
+                                <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+                                {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
                                 <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
                                 <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
                                 <br>
-                                <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small>
+                                {{-- <small>Powered by Kuronekosan - Fakultas Teknik - Universitas Teknologi Sumbawa</small> --}}
                             </div>
                         @endisset
                         @yield('body')
@@ -79,7 +82,7 @@
                 }
                 function showStuff() {
                     // document.getElementsByClassName("button").style = "inline-block";
-                    $('#button').delay(500).fadeIn(2200);
+                    $('#button-awal').delay(500).fadeIn(2200);
                 }
             </script>
         @endisset

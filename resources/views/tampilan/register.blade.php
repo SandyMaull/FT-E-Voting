@@ -21,17 +21,17 @@
                     @csrf
                     <div class="form-group">
                         <h5 for="Nama">Nama</h5>
-                        <input type="text" class="form-control" name="nama" id="Nama" aria-describedby="NamaHelp" placeholder="Enter Nama">
+                        <input type="text" class="form-control" name="nama" id="Nama" aria-describedby="NamaHelp" placeholder="Enter Nama" required>
                         <small id="NamaHelp" class="form-text text-muted">Masukan Nama Lengkap</small>
                     </div>
                     <div class="form-group">
                         <h5 for="NIM">NIM</h5>
-                        <input type="text" class="form-control" name="nim" id="NIM" placeholder="NIM" aria-describedby="NIM_Help">
+                        <input type="text" class="form-control" name="nim" id="NIM" placeholder="NIM" aria-describedby="NIM_Help" required>
                         <small id="NIM_Help" class="form-text text-muted">Masukan NIM</small>
                     </div>
                     <div class="form-group">
                         <h5 for="PRODI">Program Studi</h5>
-                        <select class="form-control" name="prodi" id="PRODI" aria-describedby="PRODI_Help">
+                        <select class="form-control" name="prodi" id="PRODI" aria-describedby="PRODI_Help" required>
                             <option selected="selected" value="Teknik Informatika">Teknik Informatika</option>
                             <option value="Teknik Sipil">Teknik Sipil</option>
                             <option value="Teknik Elektro">Teknik Elektro</option>
@@ -45,7 +45,7 @@
                 <div class="col col-lg-6 col-sm-12">
                     <div class="form-group">
                         <h5 for="Password">Password</h5>
-                        <input type="password" class="form-control" name="password" id="Password" placeholder="Password" aria-describedby="Password_Help">
+                        <input type="password" class="form-control" name="password" id="Password" placeholder="Password" aria-describedby="Password_Help" required>
                         <small id="Password_Help" class="form-text text-muted">Masukan Password</small>
                     </div>
                     <div class="form-group">
@@ -64,7 +64,8 @@
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
         <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-            <img src="{{ asset('bem.png') }}" alt="Logo BEM"/>
+            <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+            {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
             <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
             <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
             <br>

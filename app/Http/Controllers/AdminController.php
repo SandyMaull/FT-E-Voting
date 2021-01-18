@@ -11,6 +11,8 @@ use App\Voters;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Carbon;
+use PhpParser\Node\Expr\Cast\Array_;
+use Symfony\Component\Console\Helper\Helper;
 
 class AdminController extends Controller
 {
@@ -126,10 +128,12 @@ class AdminController extends Controller
 
     public function kandidat_index()
     {
-        $tim = Tim::all();
+        $tim_bem = Tim::where('pemilihan', 'BEM')->get();
+        $tim_dpm = Tim::where('pemilihan', 'DPM')->first();
         $kandidat = Kandidat::all();
         return view('admin.kandidat', [
-            'tim' => $tim,
+            'tim_bem' => $tim_bem,
+            'tim_dpm' => $tim_dpm,
             'kandidat' => $kandidat
         ]);
         // dd($kandidat);
@@ -140,15 +144,18 @@ class AdminController extends Controller
         $request->validate([
             'nama_tim' => 'required',
             'semboyan_tim' => 'required',
+            'tipe_pemilihan' => 'required',
         ],
         [
             'nama_tim.required' => 'Nama Tim dibutuhkan!',
             'semboyan_tim.required' => 'Semboyan Tim dibutuhkan!',
+            'tipe_pemilihan.required' => 'Pemilihan Tim dibutuhkan!',
             
         ]);
         $tim = new Tim;
         $tim->nama_tim = $request->nama_tim;
         $tim->semboyan = $request->semboyan_tim;
+        $tim->pemilihan = $request->tipe_pemilihan;
         $savetim = $tim->save();
         if ($savetim) {
             return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambahkan!']);
@@ -246,39 +253,47 @@ class AdminController extends Controller
             'image_kandidat.max' => 'Gambar Kandidat maximal size 2048Mb!',
             
         ]);
+        $count_pengalaman  = substr_count($request->pengalaman_kandidat,"\r\n");
+        $count_visi  = substr_count($request->visi_kandidat,"\r\n");
+        $count_misi  = substr_count($request->misi_kandidat,"\r\n");
+        $data_pengalaman = ($count_pengalaman != 0) ? CustomHelper::ExplodeStringSpacing($request->pengalaman_kandidat, true) : $data_pengalaman = $request->pengalaman_kandidat;
+        $data_visi = ($count_visi != 0) ? CustomHelper::ExplodeStringSpacing($request->visi_kandidat, true) : $data_visi = $request->visi_kandidat;
+        $data_misi = ($count_misi != 0) ? CustomHelper::ExplodeStringSpacing($request->misi_kandidat, true) : $data_misi = $request->misi_kandidat;
+        // dd($request->pengalaman_kandidat);
+        // dd($data_visi);
         if($file = $request->file('image_kandidat')) {
-                $name = Carbon::now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = public_path('/image');
-                $canvas = Image::canvas(102, 102);
-                $resizeImage  = Image::make($file)->resize(102, 102, function($constraint) {
-                    $constraint->aspectRatio();
-                })->trim();
-                $canvas->insert($resizeImage, 'center');
-                $canvas->save($destinationPath . '/kecil'. '/' . $name);
-                if($file->move($destinationPath, $name)) {
-                    $kandidat = new Kandidat;
-                    $kandidat->nama = $request->nama_kandidat;
-                    $kandidat->nim = $request->nim_kandidat;
-                    $kandidat->jurusan = $request->jurusan_kandidat;
-                    $kandidat->visi = $request->visi_kandidat;
-                    $kandidat->misi = $request->misi_kandidat;
-                    $kandidat->pengalaman = $request->pengalaman_kandidat;
-                    $kandidat->image = $name;
-                    $kandidat->voting_id = $request->voting_id;
-                    $kandidat->tim_id = $request->tim_id;
-                    $kandidat_db = $kandidat->save();
-                    if ($kandidat_db) {
-                        return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambahkan!']);
-                    }
-                    else {
-                        return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Database Connection.']);
-                    }
-
-                    return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambah!']);
+            $name = Carbon::now()->timestamp . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('/image');
+            $canvas = Image::canvas(102, 102);
+            $resizeImage  = Image::make($file)->resize(102, 102, function($constraint) {
+                $constraint->aspectRatio();
+            })->trim();
+            $canvas->insert($resizeImage, 'center');
+            $canvas->save($destinationPath . '/kecil'. '/' . $name);
+            if($file->move($destinationPath, $name)) {
+                $kandidat = new Kandidat;
+                $kandidat->nama = $request->nama_kandidat;
+                $kandidat->nim = $request->nim_kandidat;
+                $kandidat->jurusan = $request->jurusan_kandidat;
+                $kandidat->visi = $data_visi;
+                $kandidat->misi = $data_misi;
+                $kandidat->pengalaman = $data_pengalaman;
+                $kandidat->image = $name;
+                $kandidat->voting_id = $request->voting_id;
+                $kandidat->tim_id = $request->tim_id;
+                $kandidat_db = $kandidat->save();
+                if ($kandidat_db) {
+                    return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambahkan!']);
                 }
                 else {
-                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check File Permission.']);
+                    return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Database Connection.']);
                 }
+
+                return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Ditambah!']);
+            }
+            else {
+                return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check File Permission.']);
+            }
         }
         else {
             return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Format Gambar yg dikirim.']);
@@ -311,6 +326,12 @@ class AdminController extends Controller
             
         ]);
         $kandidat = Kandidat::where('id', $request->kandidat_id)->first();
+        $count_pengalaman  = substr_count($request->pengalaman_kandidat,"\r\n");
+        $count_visi  = substr_count($request->visi_kandidat,"\r\n");
+        $count_misi  = substr_count($request->misi_kandidat,"\r\n");
+        $data_pengalaman = ($count_pengalaman != 0) ? CustomHelper::ExplodeStringSpacing($request->pengalaman_kandidat, true) : $data_pengalaman = $request->pengalaman_kandidat;
+        $data_visi = ($count_visi != 0) ? CustomHelper::ExplodeStringSpacing($request->visi_kandidat, true) : $data_visi = $request->visi_kandidat;
+        $data_misi = ($count_misi != 0) ? CustomHelper::ExplodeStringSpacing($request->misi_kandidat, true) : $data_misi = $request->misi_kandidat;
         if ($request->edit_image == "on") {
             $request->validate([
                 'image_kandidat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -350,13 +371,14 @@ class AdminController extends Controller
             else {
                 return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' Data Gagal Ditambah! Check Format Gambar yg dikirim.']);
             }
+            
             $kandidat = Kandidat::where('id', $request->kandidat_id)->update([
                 'nama' => $request->nama_kandidat,
                 'nim' => $request->nim_kandidat,
                 'jurusan' => $request->jurusan_kandidat,
-                'visi' => $request->visi_kandidat,
-                'misi' => $request->misi_kandidat,
-                'pengalaman' => $request->pengalaman_kandidat,
+                'visi' => $data_visi,
+                'misi' => $data_misi,
+                'pengalaman' => $data_pengalaman,
                 'image' => $name,
             ]);
             if ($kandidat) {
@@ -371,9 +393,9 @@ class AdminController extends Controller
                 'nama' => $request->nama_kandidat,
                 'nim' => $request->nim_kandidat,
                 'jurusan' => $request->jurusan_kandidat,
-                'visi' => $request->visi_kandidat,
-                'misi' => $request->misi_kandidat,
-                'pengalaman' => $request->pengalaman_kandidat,
+                'visi' => $data_visi,
+                'misi' => $data_misi,
+                'pengalaman' => $data_pengalaman,
             ]);
             if ($kandidat) {
                 return redirect()->route('adminKandidat')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);

@@ -29,91 +29,142 @@
 @endsection
 
 @section('content')
-
-<div class="card card-primary">
-    <div class="card-header">
-        <h3 class="card-title">Data Tim</h3>
-    </div>
-    <div class="card-body">
-        @foreach ($tim as $tim_item)
-            <div class="card card-default">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $tim_item->nama_tim }}</h3>
-                    <div class="card-tools">
-                        <button type="submit" class="btn btn-secondary btn-xs" data-semboyan="{{ $tim_item->semboyan }}" data-nama="{{ $tim_item->nama_tim }}" data-id="{{ $tim_item->id }}" data-toggle="modal" data-target="#modal_edit_tim">Edit Tim</button>
-                        <button type="button" class="btn btn-warning btn-xs" data-nama="{{ $tim_item->nama_tim }}" data-id="{{ $tim_item->id }}" data-toggle="modal" data-target="#modal_hapus_tim">Hapus Tim</button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <div class="containter">
-                        <div class="row text-center">
-                            @foreach ($kandidat->where('tim_id', $tim_item->id) as $kand)
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="card bg-light">
-                                        <div class="card-header text-muted border-bottom-0">
-                                            Kandidat - {{ $loop->iteration }}
-                                        </div>
-                                        <div class="card-body pt-0">
-                                            <div class="row">
-                                                <div class="col-mb-5 col-sm-12 text-center">
-                                                    <img src="{{ asset('image/kecil/' . $kand->image) }}" alt="" class="img-circle img-fluid">
-                                                </div>
-                                                <div class="col-mb-7 col-sm-12">
-                                                    <h2 class="lead"><b>{{ $kand->nama }}</b></h2>
-                                                    <p class="text-muted text-sm"><b>Jurusan: </b> {{ $kand->jurusan }} </p>
-                                                    <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                    <li class="small"><span class="fa-li"><i class="fas fa-id-badge"></i></span> NIM: {{ $kand->nim }}</li>
-                                                    <li class="small"><span class="fa-li"><i class="fas fa-eye"></i></span> Visi: {{ $kand->visi }}</li>
-                                                    <li class="small"><span class="fa-li"><i class="fas fa-list"></i></span> Misi: {{ $kand->misi }}</li>
-                                                    <li class="small"><span class="fa-li"><i class="fas fa-briefcase"></i></span> Pengalaman: {{ $kand->pengalaman }}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="text-right">
-                                            <button type="submit" data-id="{{ $kand->id }}" class="btn btn-sm bg-teal" data-toggle="modal" data-target="#modal_hapus_kandidat">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_edit_kandidat"
-                                            data-nama="{{ $kand->nama }}" data-nim="{{ $kand->nim }}" data-jurusan="{{ $kand->jurusan }}" data-visi="{{ $kand->visi }}" data-id="{{ $kand->id }}"
-                                            data-misi="{{ $kand->misi }}" data-pengalaman="{{ $kand->pengalaman }}" data-image="{{ $kand->image }}" data-voting="{{ $kand->voting_id }}"
-                                            data-tim="{{ $kand->tim_id }}">
-                                                <i class="fas fa-user-edit"></i>
-                                            </button>
-                                            </div>
-                                        </div>
-                                    </div>        
-                                </div>
-                            @endforeach
+{{-- Data TIM BEM  --}}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Data Tim BEM</h3>
+        </div>
+        <div class="card-body">
+            @foreach ($tim_bem as $tim_item)
+                <div class="card card-default">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ $tim_item->nama_tim }}</h3>
+                        <div class="card-tools">
+                            <button type="submit" class="btn btn-secondary btn-xs" data-semboyan="{{ $tim_item->semboyan }}" data-nama="{{ $tim_item->nama_tim }}" data-id="{{ $tim_item->id }}" data-toggle="modal" data-target="#modal_edit_tim">Edit Tim</button>
                         </div>
-                        <div class="row text-center">
-                            <div class="col">
-                                <samp>{{ $tim_item->semboyan }}</samp>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="containter">
+                            <div class="row text-center">
+                                @foreach ($kandidat->where('tim_id', $tim_item->id) as $kand)
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="card bg-light">
+                                            <div class="card-header text-muted border-bottom-0">
+                                                Kandidat - {{ $loop->iteration }}
+                                            </div>
+                                            <div class="card-body pt-0">
+                                                <div class="row">
+                                                    <div class="col-mb-5 col-sm-12 text-center">
+                                                        <img src="{{ asset('image/kecil/' . $kand->image) }}" alt="" class="img-circle img-fluid">
+                                                    </div>
+                                                    <div class="col-mb-7 col-sm-12">
+                                                        <h2 class="lead"><b>{{ $kand->nama }}</b></h2>
+                                                        <p class="text-muted text-sm"><b>Jurusan: </b> {{ $kand->jurusan }} </p>
+                                                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                            <li class="small"><span class="fa-li"><i class="fas fa-id-badge"></i></span> NIM: {{ $kand->nim }}</li>
+                                                            <li class="small"><span class="fa-li"><i class="fas fa-eye"></i></span> Visi: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->visi, true, true) }}</li>
+                                                            <li class="small"><span class="fa-li"><i class="fas fa-list"></i></span> Misi: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->misi, true, true) }}</li>
+                                                            <li class="small"><span class="fa-li"><i class="fas fa-briefcase"></i></span> Pengalaman: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->pengalaman, true, true) }}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="text-right">
+                                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_edit_kandidat"
+                                                data-nama="{{ $kand->nama }}" data-nim="{{ $kand->nim }}" data-jurusan="{{ $kand->jurusan }}" data-visi="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->visi, true) }}" data-id="{{ $kand->id }}"
+                                                data-misi="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->misi, true) }}" data-pengalaman="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->pengalaman, true) }}" data-image="{{ $kand->image }}" data-voting="{{ $kand->voting_id }}"
+                                                data-tim="{{ $kand->tim_id }}">
+                                                    <i class="fas fa-user-edit"></i>
+                                                </button>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="row text-center">
+                                <div class="col">
+                                    <samp>{{ $tim_item->semboyan }}</samp>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        {{-- <button type="button" data-id="{{ $tim_item->id }}" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah_kandidat">
+                            Tambah Kandidat
+                        </button> --}}
+                    </div>
                 </div>
-                <!-- /.card-body -->
-                <div class="card-footer">
-                    {{-- <a href="#" class="btn btn-primary">Tambah Kandidat</a> --}}
-                    <button type="button" data-id="{{ $tim_item->id }}" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah_kandidat">
-                        Tambah Kandidat
-                    </button>
+            @endforeach
+        </div>
+        <div class="card-footer">
+            <div class="form-group">
+                {{-- <button type="button" class="btn btn-primary float-right" data-pemilihan="BEM" data-toggle="modal" data-target="#modal_tambah_tim">
+                    Tambah Tim
+                </button> --}}
+            </div>
+        </div>
+    </div>
+
+{{-- Data TIM DPM  --}}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Data Tim DPM</h3>
+        </div>
+        <div class="card-body">
+            <div class="containter">
+                <div class="row text-center">
+                    @foreach ($kandidat->where('tim_id', $tim_dpm->id) as $kand)
+                        <div class="col-md-6 col-sm-12">
+                            <div class="card bg-light">
+                                <div class="card-header text-muted border-bottom-0">
+                                    Kandidat - {{ $loop->iteration }}
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-mb-5 col-sm-12 text-center">
+                                            <img src="{{ asset('image/kecil/' . $kand->image) }}" alt="" class="img-circle img-fluid">
+                                        </div>
+                                        <div class="col-mb-7 col-sm-12">
+                                            <h2 class="lead"><b>{{ $kand->nama }}</b></h2>
+                                            <p class="text-muted text-sm"><b>Jurusan: </b> {{ $kand->jurusan }} </p>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                            <li class="small"><span class="fa-li"><i class="fas fa-id-badge"></i></span> NIM: {{ $kand->nim }}</li>
+                                            <li class="small"><span class="fa-li"><i class="fas fa-eye"></i></span> Visi: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->visi, true, true) }}</li>
+                                            <li class="small"><span class="fa-li"><i class="fas fa-list"></i></span> Misi: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->misi, true, true) }}</li>
+                                            <li class="small"><span class="fa-li"><i class="fas fa-briefcase"></i></span> Pengalaman: {{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->pengalaman, true, true) }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                    <button type="submit" data-id="{{ $kand->id }}" class="btn btn-sm bg-teal" data-toggle="modal" data-target="#modal_hapus_kandidat">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_edit_kandidat"
+                                    data-nama="{{ $kand->nama }}" data-nim="{{ $kand->nim }}" data-jurusan="{{ $kand->jurusan }}" data-visi="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->visi, true) }}" data-id="{{ $kand->id }}"
+                                    data-misi="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->misi, true) }}" data-pengalaman="{{ App\Helpers\CustomHelper::ImplodeStringSpacing($kand->pengalaman, true) }}" data-image="{{ $kand->image }}" data-voting="{{ $kand->voting_id }}"
+                                    data-tim="{{ $kand->tim_id }}">
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>        
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        @endforeach
-    </div>
-    <div class="card-footer">
-        <div class="form-group">
-            {{-- <a href="#" class="btn btn-primary float-right">Tambah Tim</a> --}}
-            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#modal_tambah_tim">
-                Tambah Tim
+        </div>
+        <div class="card-footer">
+            <button type="button" data-id="{{ $tim_dpm->id }}" class="btn btn-primary" data-toggle="modal" data-target="#modal_tambah_kandidat">
+                Tambah Kandidat
             </button>
         </div>
     </div>
-</div>
 
 
 {{-- Modal Tambah Tim --}}
@@ -136,6 +187,7 @@
                         <div class="form-group">
                             <label for="SemboyanTim">Semboyan/Jargon</label>
                             <input type="text" class="form-control" name="semboyan_tim" id="SemboyanTim" placeholder="Masukan Semboyan Tim">
+                            <input type="hidden" name="tipe_pemilihan" id="pemilihan_tim">
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -184,7 +236,7 @@
 
 
 {{-- Modal Delete Tim --}}
-    <div class="modal fade" id="modal_hapus_tim">
+    {{-- <div class="modal fade" id="modal_hapus_tim">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -206,7 +258,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
 {{-- Modal Tambah Kandidat --}}
@@ -257,7 +309,7 @@
                             <label for="GambarKandidat">Gambar Kandidat</label>
                             <div class="input-group">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="GambarKandidat" name="image_kandidat">
+                                    <input type="file" class="custom-file-input" id="GambarKandidat" name="image_kandidat" accept="image/*">
                                     <label class="custom-file-label" id="GambarKandidatLabel" for="GambarKandidat">Pilih gambar</label>
                                 </div>
                                 <div class="input-group-append">
@@ -336,7 +388,7 @@
                         <div id="GambarEditDiv" class="form-group" style="display: none">
                             <div class="input-group">
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="GambarKandidatEdit" name="image_kandidat">
+                                    <input type="file" class="custom-file-input" id="GambarKandidatEdit" name="image_kandidat" accept="image/*">
                                     <label class="custom-file-label" id="GambarKandidatLabel" for="GambarKandidatEdit">Pilih gambar</label>
                                 </div>
                                 <div class="input-group-append">
@@ -397,7 +449,7 @@
     document.getElementById("datavoting_kandidat").classList.add("active");
 
     $('.select2bs4').select2({
-      theme: 'bootstrap4'
+      theme: 'bootstrap4',
     });
     $('#GambarKandidat').change(function(e){
         if($('#GambarKandidat')[0].files){
@@ -417,15 +469,23 @@
         }
     }
 
-    // Modal Hapus Tim
-        $('#modal_hapus_tim').on('show.bs.modal', function(event) {
+    // Modal Tambah Tim
+        $('#modal_tambah_tim').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
-            var nama = button.data('nama')
-            var id = button.data('id')
+            var pemilihan = button.data('pemilihan')
             var modal = $(this)
-            modal.find('.modal-title').text('Hapus Tim - ' + nama);
-            document.getElementById("tim_id").value = id;
+            document.getElementById("pemilihan_tim").value = pemilihan;
         });
+
+    // Modal Hapus Tim
+        // $('#modal_hapus_tim').on('show.bs.modal', function(event) {
+        //     var button = $(event.relatedTarget)
+        //     var nama = button.data('nama')
+        //     var id = button.data('id')
+        //     var modal = $(this)
+        //     modal.find('.modal-title').text('Hapus Tim - ' + nama);
+        //     document.getElementById("tim_id").value = id;
+        // });
 
     // Modal Edit Tim
         $('#modal_edit_tim').on('show.bs.modal', function(event) {
@@ -466,6 +526,7 @@
             document.getElementById("NamaKandidatEdit").value = nama;
             document.getElementById("NimKandidatEdit").value = nim;
             document.getElementById("JurusanKandidatEdit").value = jurusan;
+            // console.log(jurusan);
             document.getElementById("VisiKandidatEdit").value = visi;
             document.getElementById("MisiKandidatEdit").value = misi;
             document.getElementById("PengalamanKandidatEdit").value = pengalaman;

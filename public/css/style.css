@@ -20,9 +20,11 @@
   height:100%;
   background-color: #34eb86;
   z-index: -1;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-#button {
+#button-awal {
   display: none; 
 }
 

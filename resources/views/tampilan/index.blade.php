@@ -54,7 +54,8 @@
             </div>
         @endif
         <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-            <img src="{{ asset('bem.png') }}" alt="Logo BEM"/>
+            <img src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
+            {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
             <img src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
             <img src="{{ asset('uts.png') }}" alt="Logo UTS"/>
             <br>
