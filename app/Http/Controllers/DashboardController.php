@@ -98,8 +98,9 @@ class DashboardController extends Controller
 
     public function beranda()
     {
-        $tim = Tim::all();
+        $tim_bem = Tim::where('pemilihan', 'BEM')->get();
+        $tim_dpm = Tim::where('pemilihan', 'DPM')->get();
         $kandidat = Kandidat::all();
-        return view('tampilan.beranda', ['tim' => $tim, 'kandidat' => $kandidat]);
+        return view('tampilan.beranda', ['tim_dpm' => $tim_dpm, 'tim_bem' => $tim_bem, 'kandidat' => $kandidat]);
     }
 }

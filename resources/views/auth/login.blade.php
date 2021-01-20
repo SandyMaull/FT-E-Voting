@@ -67,7 +67,7 @@
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    E-Voting Fakultas Teknik - Powered by Laravel
+                    E-Voting Fakultas Teknik - Powered by Kuronekosan
                 </div>
             </div>
         </div>

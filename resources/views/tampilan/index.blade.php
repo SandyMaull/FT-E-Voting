@@ -53,11 +53,10 @@
                 </div>
             </div>
         @endif
-        <div style="position:fixed; bottom:10px; text-align:center; left:0; right:0;" class="footer">
-            <img class="img-footer" src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
-            {{-- <img src="{{ asset('bem.png') }}" alt="Logo BEM"/> --}}
+        <div class="footer">
+            <img class="img-footer" src="{{ asset('ft.png') }}" alt="Logo Fakultas Teknik"/>
             <img class="img-footer" src="{{ asset('dpm.png') }}" alt="Logo DPM"/>
-            <img class="img-footer" src="{{ asset('uts.png') }}" alt="Logo UTS"/>
+            <img class="img-footer" src="{{ asset('e-vottry.png') }}" alt="Logo E-Voting"/>
             <br>
         </div>
     </div>

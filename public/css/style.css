@@ -1,28 +1,28 @@
 body,
 html {
-    height: 100%
+  height: 100%;
 }
 
-.wrap{
+.wrap {
   color: azure;
 }
 
 .loading {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	bottom: 0px;
-	right: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 9999;
-	background: url("/img/Preloader_11.gif") center no-repeat #fff;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url("/img/Preloader_11.gif") center no-repeat #fff;
 }
 
 #particles-js {
-  position : fixed;
-  width:100%;
-  height:100%;
+  position: fixed;
+  width: 100%;
+  height: 100%;
   background-color: #34eb86;
   z-index: -1;
   background-repeat: no-repeat;
@@ -31,23 +31,74 @@ html {
 }
 
 #button-awal {
-  display: none; 
+  display: none;
 }
 
 #KandidatImage {
-	border-radius: 50%;
+  border-radius: 50%;
+}
+
+.footer {
+  position: fixed;
+  bottom: 10px;
+  text-align: center;
+  left: 0;
+  right: 0;
+}
+
+.row-awal {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.h1-awal {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+#tim_bem {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(10rem, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-gap: 1em;
+  margin-bottom: 2em;
+  margin-top: 1em;
+}
+
+#tim_bem .card #bem_bagian {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(5rem, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  grid-gap: 1em;
+  padding: 9px;
+}
+
+#tim_bem .card #bem_bagian .col-sm-12 {
+  margin-bottom: 1em;
 }
 
 @media only screen and (max-width: 768px) {
-	/* For mobile phones: */
-	.h1, h1 {
-		font-size: 2rem;
-	}
-	.small, small {
-		font-size: 70%;
-	}
-	.img-footer {
-		height: 50px;
-		width: auto;
-	}
+  /* For mobile phones: */
+  .h1, h1 {
+    font-size: 2rem;
   }
+  .small, small {
+    font-size: 70%;
+  }
+  .img-footer {
+    height: 50px;
+    width: auto;
+  }
+  #KandidatImage {
+    height: 50px;
+    width: auto;
+    margin-bottom: 12px;
+  }
+  .h1-awal {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+}
+/*# sourceMappingURL=style.css.map */
