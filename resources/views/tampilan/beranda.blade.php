@@ -104,6 +104,9 @@
             document.getElementById("nama_kandidat").innerHTML = nama;
             document.getElementById("nim_kandidat").innerHTML = nim;
             document.getElementById("jurusan_kandidat").innerHTML = jurusan;
+            console.log(visi);
+            console.log(misi);
+            console.log(pengalaman);
         });
     </script>
 @endsection

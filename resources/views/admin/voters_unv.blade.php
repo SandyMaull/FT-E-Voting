@@ -58,11 +58,14 @@
                                     <td>{{ $unv->nim }}</td>
                                     <td>{{ $unv->prodi }}</td>
                                     <td>{{ $unv->token }}</td>
-                                    <td><a href="{{ url('/image/siakad'.'/'.$unv->foto_siakad) }}">Preview</a></td>
+                                    <td><a target="_blank" href="{{ url('/image/siakad'.'/'.$unv->foto_siakad) }}">Preview</a></td>
                                     <td>{{ $unv->nmor_wa }}</td>
                                     <td>
                                         <button type="button" data-id="{{ $unv->id }}" class="btn btn-primary" data-toggle="modal" data-target="#modal_verifikasi">
                                             Verifikasi
+                                        </button>
+                                        <button type="button" data-id="{{ $unv->id }}" class="btn btn-danger" data-toggle="modal" data-target="#modal_delete">
+                                            Delete Data
                                         </button>
                                     </td>
                                 </tr>
@@ -88,7 +91,7 @@
         </div>
     </div>
 
-    {{-- Modal Verifikasi Voters --}}
+{{-- Modal Verifikasi Voters --}}
     <div class="modal fade" id="modal_verifikasi">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -109,6 +112,33 @@
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Verifikasi Data</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+{{-- Modal Delete Voters --}}
+    <div class="modal fade" id="modal_delete">
+        <div class="modal-dialog">
+            <div class="modal-content bg-danger">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Voters</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url('/admin/voters/delete_unverif') }}" method="post">
+                    @csrf
+                    <div class="modal-body">
+                        Apakah anda yakin ingin <strong>MENGHAPUS</strong> data voter ini?
+                        <input type="hidden" name="voters_id" id="id_voters_delete">
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-warning">Delete Data</button>
                     </div>
                 </form>
             </div>
@@ -142,6 +172,13 @@
                 var id = button.data('id')
                 var modal = $(this)
                 document.getElementById("id_voters").value = id;
+            });
+        // Modal DELETE Voters
+            $('#modal_delete').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget)
+                var id = button.data('id')
+                var modal = $(this)
+                document.getElementById("id_voters_delete").value = id;
             });
         });
     </script>

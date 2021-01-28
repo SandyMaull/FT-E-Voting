@@ -48,5 +48,10 @@ Route::post('/register_post', 'DashboardController@register_post');
         
     // Voters Controller
         Route::get('/admin/voters/verif', 'AdminController@voter_verif')->name('adminVotersVer');
+        Route::post('/admin/voters/revoke_verif', 'AdminController@voter_revoke_verif');
         Route::get('/admin/voters/unverif', 'AdminController@voter_unverif')->name('adminVotersunVer');
         Route::post('/admin/voters/unverif_post', 'AdminController@voter_unverif_post');
+        Route::post('/admin/voters/delete_unverif', 'AdminController@voter_delete_unverif');
+
+    // GENERATE QR CODE
+        Route::get('/administrator/qrcode', 'AdminController@getQRCodeWa');

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Voting;
-use App\Helpers\CustomHelper;
-use App\Kandidat;
 use App\Tim;
 use App\Voters;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\File;
+use App\Voting;
+use App\Kandidat;
+use Illuminate\Http\Request;
+use App\Helpers\CustomHelper;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Carbon;
-use PhpParser\Node\Expr\Cast\Array_;
-use Symfony\Component\Console\Helper\Helper;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class AdminController extends Controller
 {
@@ -24,13 +24,23 @@ class AdminController extends Controller
             'kandidat_addtim', 'kandidat_deltim',
             'kandidat_edittim', 'kandidat_addkandidat',
             'kandidat_editkandidat', 'kandidat_delkandidat',
+            'getQRCodeWa',
 
+        ]]);
+        $this->middleware('admin:Staff', ['only' => [
+            'voter_revoke_verif', 'voter_unverif_post', 
+            'voter_delete_unverif'
         ]]);
     }
 
     public function redirectindex()
     {
         return redirect('administrator');
+    }
+
+    public function getQRCodeWa()
+    {
+        return view('admin.qrcode');
     }
 
     public function index()
@@ -446,6 +456,28 @@ class AdminController extends Controller
         return view('admin.voters_ver', ['verif' => $voter]);
     }
 
+    public function voter_revoke_verif(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'voters_id' => 'required',
+        ],
+        [
+            'voters_id.required' => 'ID Voters dibutuhkan!',
+            
+        ]);
+        $voting = Voters::where('id', $request->voters_id)->update([
+            'verified' => 0,
+        ]);
+        if ($voting) {
+            return redirect()->route('adminVotersVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
+        }
+        else {
+            return redirect()->route('adminVotersVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Check Database Connection.']);
+        }
+
+    }
+
     public function voter_unverif()
     {
         $voter = Voters::where('verified', 0)->simplePaginate(15);
@@ -461,14 +493,52 @@ class AdminController extends Controller
             'voters_id.required' => 'ID Voters dibutuhkan!',
             
         ]);
-        $voting = Voters::where('id', $request->voters_id)->update([
+        $voting = Voters::where('id', $request->voters_id)->first();
+        $client = new Client();
+        $url = "localhost:8000/send-message";
+        $method = 'POST';
+        $data['tokenapi'] = '$2y$10$DW9iRCyU1Urj5nOI6Dp4he8lISFk2cItJgCIrnkbzCxmZeo8Ca4ya';
+        $data['number'] = $voting->nmor_wa;
+        $data['nama'] = $voting->nama;
+        $data['token'] = $voting->token;
+        try {
+            $client->request($method, $url, [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'form_params' => $data
+            ]);
+
+        } catch (RequestException $e) {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Check API Connection.']);
+        }
+
+        $resultakhir = $voting->update([
             'verified' => 1,
         ]);
-        if ($voting) {
+        if ($resultakhir) {
             return redirect()->route('adminVotersunVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);
         }
         else {
             return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Check Database Connection.']);
+        }
+    }
+
+    public function voter_delete_unverif(Request $request)
+    {
+        $request->validate([
+            'voters_id' => 'required',
+        ],
+        [
+            'voters_id.required' => 'ID Voters dibutuhkan!',
+            
+        ]);
+        $voting = Voters::destroy($request->voters_id);
+        if ($voting) {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Dihapus!']);
+        }
+        else {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Dihapus! Check Database Connection.']);
         }
     }
 }
