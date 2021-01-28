@@ -17,7 +17,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" crossorigin="anonymous"></script>
 	<script>
 		$(document).ready(function() {
-			var socket = io('https://evoting.ft.uts.ac.id:1380');
+			var socket = io('http://evoting.ft.uts.ac.id:1380');
 
 			socket.on('message', function(msg) {
 				$('.logs').append($('<li>').text(msg));
