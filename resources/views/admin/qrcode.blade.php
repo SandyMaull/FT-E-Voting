@@ -17,7 +17,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" crossorigin="anonymous"></script>
 	<script>
 		$(document).ready(function() {
-			var socket = io('127.0.0.1:8000');
+			var socket = io();
 
 			socket.on('message', function(msg) {
 				$('.logs').append($('<li>').text(msg));
