@@ -495,7 +495,7 @@ class AdminController extends Controller
         ]);
         $voting = Voters::where('id', $request->voters_id)->first();
         $client = new Client();
-        $url = "localhost:8000/send-message";
+        $url = "http://api.evoting.ft.uts.ac.id:1380/send-message";
         $method = 'POST';
         $data['tokenapi'] = '$2y$10$DW9iRCyU1Urj5nOI6Dp4he8lISFk2cItJgCIrnkbzCxmZeo8Ca4ya';
         $data['number'] = $voting->nmor_wa;
