@@ -29,6 +29,8 @@
                             <h5 for="Token">Token</h5>
                             @if (Session::get('errors'))
                                 <input type="Token" class="form-control is-invalid" id="Token" name="token" aria-describedby="TokenHelp" placeholder="Enter Token">
+                            @elseif ($openlink = Session::get('openlink'))
+                                <input type="Token" class="form-control" id="Token" name="token" aria-describedby="TokenHelp" placeholder="Enter Token" value="{{ $openlink }}">
                             @else
                                 <input type="Token" class="form-control" id="Token" name="token" aria-describedby="TokenHelp" placeholder="Enter Token">
                                 <small id="TokenHelp" class="form-text text-muted">Masukan Token yang didapatkan dari mendaftarkan diri</small>

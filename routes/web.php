@@ -23,6 +23,7 @@ Auth::routes([
 // User Controller
 Route::get('/', 'DashboardController@home')->name('home');
 Route::get('/masuk', 'Auth\VotersLoginController@showLoginForm')->name('masuk')->middleware('votingcheck');
+Route::get('/masuk/{token}', 'DashboardController@redirectLoginAfterRegis')->middleware('votingcheck');
 Route::post('/masuk2', 'Auth\VotersLoginController@login');
 Route::post('/logout2', 'Auth\VotersLoginController@logout')->name('logoutvoters');
 Route::get('/beranda', 'DashboardController@beranda')->name('beranda');

@@ -96,6 +96,17 @@ class DashboardController extends Controller
         }
     }
 
+    public function redirectLoginAfterRegis($token)
+    {
+        $voters = Voters::where('token', $token)->first();
+        if ($voters) {
+            return redirect('/masuk')->with('openlink', $token);
+        }
+        else {
+            return redirect('/masuk');
+        }
+    }
+
     public function beranda()
     {
         $tim_bem = Tim::where('pemilihan', 'BEM')->get();
