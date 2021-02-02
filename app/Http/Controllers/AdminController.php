@@ -9,6 +9,7 @@ use App\Kandidat;
 use Illuminate\Http\Request;
 use App\Helpers\CustomHelper;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -45,7 +46,29 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('admin.index');
+        $mytime = Carbon::now();
+        $votingstatusdb = Voting::where('id', 1)->first();
+        $kandidatdb = Kandidat::all()->count();
+        $verifvoters = Voters::where('verified', 1)->get()->count();
+        $unverifvoters = Voters::where('verified', 0)->get()->count();
+        $hasvotevoters = Voters::where('has_vote', 1)->get()->count();
+        $votingstatusdb->pending = json_decode($votingstatusdb->pending, true);
+        if ($votingstatusdb->mulai > $mytime) {
+            $votingstatus = 'Belum Dimulai';
+        }
+        elseif ($votingstatusdb->berakhir < $mytime) {
+            $votingstatus = 'Sudah Berakhir';
+        }
+        elseif($votingstatusdb->pending['status'] == 'false') {
+            $votingstatus = 'Berjalan';
+        }
+        else {
+            $votingstatus = 'Ditunda';
+        }
+        return view('admin.index', [
+            'verifiedvoters' => $verifvoters, 'unverifvoters' => $unverifvoters, 'has_vote' => $hasvotevoters,
+            'votingstat' => $votingstatus, 'kandidattotal' => $kandidatdb,
+        ]);
     }
 
     public function votingpage()
@@ -509,7 +532,9 @@ class AdminController extends Controller
                 'form_params' => $data
             ]);
 
-        } catch (RequestException $e) {
+        } catch (ConnectException $ec) {
+            return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Gagal Berkomunikasi dengan API.']);
+        } catch (RequestException $eq) {
             return redirect()->route('adminVotersunVer')->with(['status' => 'error','message' => ' Data Gagal Diupdate! Check API Connection.']);
         }
 

@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CustomHelper;
 use App\Kandidat;
+use App\Tervote;
 use App\Tim;
 use App\Voters;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
-use Intervention\Image\Facades\Image;
 
 class DashboardController extends Controller
 {
     public function __construct()
     {
         $this->middleware('votingcheck')->except('home');
+        $this->middleware('guestvoters', ['only' => [
+            'register_index', 'register_post', 'redirectLoginAfterRegis'
+        ]]);
         $this->middleware('verifvoters', ['only' => [
-            'beranda'
+            'beranda', 'pilihbem', 'pilihdpm'
         ]]);
     }
 
@@ -112,7 +115,57 @@ class DashboardController extends Controller
         $tim_bem = Tim::where('pemilihan', 'BEM')->get();
         $tim_dpm = Tim::where('pemilihan', 'DPM')->get();
         $kandidat = Kandidat::all();
-        return view('tampilan.beranda', ['tim_dpm' => $tim_dpm, 'tim_bem' => $tim_bem, 'kandidat' => $kandidat]);
-        // dd($kandidat);
+        return view('tampilan.beranda', ['tim_dpm' => $tim_dpm, 'tim_bem' => $tim_bem, 'kandidat' => $kandidat])->with('bem', TRUE);
+    }
+
+    public function pilihbem(Request $request)
+    {
+        $request->validate([
+            'pilihan' => 'required',
+            'pemilihID' => 'required',
+        ],
+        [
+            'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+            'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        ]);
+        $bemvote = $request->pilihan;
+        $votersID = $request->pemilihID;
+        return redirect(route('beranda'))->with(['bemvote' => $bemvote, 'votersID' => $votersID, 'dpm' => TRUE, 'bem' => FALSE]);
+    }
+
+    public function pilihdpm(Request $request)
+    {
+        $request->validate([
+            'bemvote' => 'required',
+            'pilihan' => 'required',
+            'pemilihID' => 'required',
+        ],
+        [
+            'bemvote.required' => 'ERROR, BEMVOTE TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+            'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+            'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        ]);
+        $finalvote = new Tervote;
+        $finalvote->tim_id = $request->bemvote;
+        $finalvote->voting_dpm = $request->pilihan;
+        $finalvote->voters_id = $request->pemilihID;
+        $savevote = $finalvote->save();
+
+        $hasvote = Voters::where('id', $request->pemilihID)->first();
+        $votersudpate = $hasvote->update([
+            'has_vote' => 1,
+        ]);
+
+        if($savevote && $votersudpate) {
+            return redirect(route('aftervote'))->with('pageakhir',TRUE);
+        }
+        else {
+            return redirect(route('beranda'))->with(['status' => 'error','message' => ' Data Gagal Ditambah, Hubungi Administrator!.']);
+        }
+    }
+
+    public function telahmemilih()
+    {
+        return view('tampilan.aftervote');
     }
 }

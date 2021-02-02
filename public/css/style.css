@@ -73,10 +73,29 @@ html {
       grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
   grid-gap: 1em;
   padding: 9px;
+  margin-bottom: 1em;
 }
 
-#tim_bem .card #bem_bagian .col-sm-12 {
-  margin-bottom: 1em;
+#tim_bem .card #bem_bagian .infoconte {
+  position: relative;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-bottom: 1em;
+}
+
+#tim_bem .card #bem_bagian .infoconte .buttondetails {
+  position: absolute;
+  bottom: 0;
+}
+
+#image_kandidat {
+  max-width: 300px;
+  height: auto;
+}
+
+q {
+  font-style: italic;
 }
 
 @media only screen and (max-width: 768px) {

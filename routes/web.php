@@ -27,6 +27,9 @@ Route::get('/masuk/{token}', 'DashboardController@redirectLoginAfterRegis')->mid
 Route::post('/masuk2', 'Auth\VotersLoginController@login');
 Route::post('/logout2', 'Auth\VotersLoginController@logout')->name('logoutvoters');
 Route::get('/beranda', 'DashboardController@beranda')->name('beranda');
+Route::post('/beranda/pilihbem', 'DashboardController@pilihbem');
+Route::post('/beranda/pilihdpm', 'DashboardController@pilihdpm');
+Route::get('/beranda/telahmemilih', 'DashboardController@telahmemilih')->name('aftervote');
 Route::get('/register', 'DashboardController@register_index')->name('register');
 Route::post('/register_post', 'DashboardController@register_post');
 
@@ -41,7 +44,6 @@ Route::post('/register_post', 'DashboardController@register_post');
     // Kandidat Controller
         Route::get('/administrator/kandidat', 'AdminController@kandidat_index')->name('adminKandidat');
         Route::post('/administrator/kandidat/addtim', 'AdminController@kandidat_addtim');
-        // Route::post('/administrator/kandidat/deltim', 'AdminController@kandidat_deltim');
         Route::post('/administrator/kandidat/edittim', 'AdminController@kandidat_edittim');
         Route::post('/administrator/kandidat/addkandidat', 'AdminController@kandidat_addkandidat');
         Route::post('/administrator/kandidat/editkandidat', 'AdminController@kandidat_editkandidat');

@@ -8,7 +8,7 @@ class Tervote extends Model
 {
     protected $table = 'tervotes';
     protected $fillable = [
-        'tim', 'voting_dpm', 'voters_id'
+        'tim_id', 'voting_dpm', 'voters_id'
     ];
 
     public function voters(){
