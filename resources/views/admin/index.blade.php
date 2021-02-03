@@ -93,7 +93,19 @@
             </h3>
         </div>
         <div class="card-body">
-            <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            <canvas id="donutChartBEM" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-chart-pie mr-1"></i>
+                Total Suara DPM
+            </h3>
+        </div>
+        <div class="card-body">
+            <canvas id="donutChartDPM" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
         </div>
     </div>
 @endsection
@@ -102,46 +114,92 @@
     <script src="{{ asset('admin_asset/plugins/chart.js/Chart.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
     <script>
-        var element = document.getElementById("dashboard");
-        element.classList.add("active");
-
-        //-------------
-        //- DONUT CHART -
-        //-------------
-        // Get context with jQuery - using jQuery's .get() method.
-        var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-        var donutData        = {
-        labels: [
-            'PASLON 1', 
-            'PASLON 2',
-        ],
-        datasets: [
-            {
-            data: [700,500],
-            backgroundColor : ['#00a65a', '#f56954'],
-            }
-        ]
+        var bem1 = "{{ $resultvotes['bem1'] }}";
+        var bem2 = "{{ $resultvotes['bem2'] }}";
+        var dpm = "{{ $resultvotes['dpm'] }}";
+        var obj = JSON.parse(JSON.stringify(dpm));
+        obj = obj.replace(/&quot;/g, '"');
+        obj = JSON.parse(obj);
+        var namadpm = [];
+        var votedpm = [];
+        var colorsdpm = [];
+        var fontsdpm = [];
+        objkey = Object.keys(obj);
+        for(i = 0; i < objkey.length; i++) {
+            namadpm.push(obj[objkey[i]]['nama']);
+            votedpm.push(obj[objkey[i]]['vote']);
+            colorsdpm.push(obj[objkey[i]]['colors']);
+            fontsdpm.push('white');
         }
-        var donutOptions = {
-            maintainAspectRatio : false,
-            responsive : true,
-            tooltips: {
-                enabled: false
-            },
-            plugins: {
-                labels: {
-                    render: 'percentage',
-                    fontColor: ['green', 'white', 'red'],
-                    precision: 2
+
+
+        // donutChartBEM
+            var element = document.getElementById("dashboard");
+            element.classList.add("active");
+
+            var donutChartCanvas = $('#donutChartBEM').get(0).getContext('2d')
+            var donutData        = {
+            labels: [
+                'PASLON 1', 
+                'PASLON 2',
+            ],
+            datasets: [
+                {
+                data: [bem1, bem2],
+                backgroundColor : ['#00a65a', '#f56954'],
+                }
+            ]
+            }
+            var donutOptions = {
+                maintainAspectRatio : false,
+                responsive : true,
+                tooltips: {
+                    enabled: false
+                },
+                plugins: {
+                    labels: {
+                        render: 'percentage',
+                        fontColor: ['white', 'white'],
+                        precision: 2
+                    }
                 }
             }
-        }
-        //Create pie or douhnut chart
-        // You can switch between pie and douhnut using the method below.
-        var donutChart = new Chart(donutChartCanvas, {
-        type: 'pie',
-        data: donutData,
-        options: donutOptions      
-        });
+            var donutChart = new Chart(donutChartCanvas, {
+            type: 'pie',
+            data: donutData,
+            options: donutOptions      
+            });
+
+
+        // DONUTCHARTDPM
+            var donutChartCanvas = $('#donutChartDPM').get(0).getContext('2d')
+            var donutData        = {
+            labels: namadpm,
+            datasets: [
+                {
+                data: votedpm,
+                backgroundColor : colorsdpm,
+                }
+            ]
+            }
+            var donutOptions = {
+                maintainAspectRatio : false,
+                responsive : true,
+                tooltips: {
+                    enabled: false
+                },
+                plugins: {
+                    labels: {
+                        render: 'percentage',
+                        fontColor: fontsdpm,
+                        precision: 2
+                    }
+                }
+            }
+            var donutChart = new Chart(donutChartCanvas, {
+            type: 'pie',
+            data: donutData,
+            options: donutOptions      
+            });
     </script>
 @endsection

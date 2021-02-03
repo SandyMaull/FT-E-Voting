@@ -8,6 +8,7 @@ use App\Voting;
 use App\Kandidat;
 use Illuminate\Http\Request;
 use App\Helpers\CustomHelper;
+use App\Tervote;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -52,6 +53,35 @@ class AdminController extends Controller
         $verifvoters = Voters::where('verified', 1)->get()->count();
         $unverifvoters = Voters::where('verified', 0)->get()->count();
         $hasvotevoters = Voters::where('has_vote', 1)->get()->count();
+        $bemvotes1db = Tervote::where('tim_id', 6)->count();
+        $bemvotes2db = Tervote::where('tim_id', 9)->count();
+        $dpmvotesdb = Kandidat::where('tim_id', 11)->get();
+        $looping = 1;
+        foreach ($dpmvotesdb as $dpm) {
+            $dpmtervote = Tervote::where('voting_dpm', $dpm->id)->count();
+            if ($dpmtervote) {
+                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+                $dpmvotesdata[$dpm->id] = [
+                    'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
+                    'vote' => $dpmtervote,
+                    'colors' => $colors,
+                ];
+            } else {
+                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+                $dpmvotesdata[$dpm->id] = [
+                    'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
+                    'vote' => 0,
+                    'colors' => $colors,
+                ];
+            }
+            $looping += 1;
+        }
+        $result = [
+            'bem1' => $bemvotes1db,
+            'bem2' => $bemvotes2db,
+            'dpm' => json_encode($dpmvotesdata),
+        ];
+        // dd($result);
         $votingstatusdb->pending = json_decode($votingstatusdb->pending, true);
         if ($votingstatusdb->mulai > $mytime) {
             $votingstatus = 'Belum Dimulai';
@@ -66,8 +96,9 @@ class AdminController extends Controller
             $votingstatus = 'Ditunda';
         }
         return view('admin.index', [
-            'verifiedvoters' => $verifvoters, 'unverifvoters' => $unverifvoters, 'has_vote' => $hasvotevoters,
-            'votingstat' => $votingstatus, 'kandidattotal' => $kandidatdb,
+            'verifiedvoters' => $verifvoters, 'unverifvoters' => $unverifvoters, 
+            'has_vote' => $hasvotevoters, 'votingstat' => $votingstatus, 
+            'kandidattotal' => $kandidatdb, 'resultvotes' => $result, 
         ]);
     }
 
@@ -491,6 +522,7 @@ class AdminController extends Controller
         ]);
         $voting = Voters::where('id', $request->voters_id)->update([
             'verified' => 0,
+            'has_vote' => 0,
         ]);
         if ($voting) {
             return redirect()->route('adminVotersVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Diupdate!']);

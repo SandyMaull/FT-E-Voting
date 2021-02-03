@@ -123,7 +123,7 @@
                                     data-image="{{ asset('image/'.$kand->image) }}">
                                         Detail
                                 </button>
-                            <button type="button" class="btn btn-primary btn-danger" data-voteid="{{ auth()->guard('voter')->user()->id }}" data-id="{{ $dpm->id }}" data-toggle="modal" data-target="#ModalPilih">COBLOS</button>
+                            <button type="button" class="btn btn-primary btn-danger" data-voteid="{{ auth()->guard('voter')->user()->id }}" data-id="{{ $kand->id }}" data-toggle="modal" data-target="#ModalPilih">COBLOS</button>
                         </div>
                     </div>
                 @endforeach
