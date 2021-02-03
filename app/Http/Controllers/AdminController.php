@@ -590,6 +590,14 @@ class AdminController extends Controller
             'voters_id.required' => 'ID Voters dibutuhkan!',
             
         ]);
+        $voters = Voters::where('id', $request->voters_id)->first();
+        $orig = public_path('image/siakad/'.$voters->foto_siakad);
+        if(File::exists($orig)){
+            File::delete($orig);
+        }
+        else {
+            return redirect()->route('adminKandidat')->with(['status' => 'error','message' => ' File yang ingin dihapus tidak ditemukan!']);
+        }
         $voting = Voters::destroy($request->voters_id);
         if ($voting) {
             return redirect()->route('adminVotersunVer')->with(['status' => 'sukses', 'message' => ' Data Berhasil Dihapus!']);
