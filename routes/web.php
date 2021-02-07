@@ -22,6 +22,7 @@ Auth::routes([
 
 // User Controller
 Route::get('/', 'DashboardController@home')->name('home');
+Route::get('/result', 'DashboardController@resultakhir')->name('result');
 Route::get('/masuk', 'Auth\VotersLoginController@showLoginForm')->name('masuk')->middleware('votingcheck');
 Route::get('/masuk/{token}', 'DashboardController@redirectLoginAfterRegis')->middleware('votingcheck');
 Route::post('/masuk2', 'Auth\VotersLoginController@login');
