@@ -29,10 +29,10 @@ class DashboardController extends Controller
         return view('tampilan.layouts.app')->with('pageawal',TRUE);
     }
 
-    public function resultakhir()
-    {
-        $tim_bem = Tim::where('pemilihan', 'BEM')->get();
-    }
+    // public function resultakhir()
+    // {
+    //     $tim_bem = Tim::where('pemilihan', 'BEM')->get();
+    // }
 
     public function register_index()
     {
