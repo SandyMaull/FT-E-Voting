@@ -46,7 +46,7 @@ Voters - Terverifikasi
                             <th>NIM</th>
                             <th>Prodi</th>
                             <th>Token</th>
-                            <th>Foto Siakad</th>
+                            <th>Foto KRS</th>
                             <th>No.Telp</th>
                             <th>Action</th>
                         </tr>
@@ -76,7 +76,7 @@ Voters - Terverifikasi
                             <th>NIM</th>
                             <th>Prodi</th>
                             <th>Token</th>
-                            <th>Foto Siakad</th>
+                            <th>Foto KRS</th>
                             <th>No.Telp</th>
                             <th>Action</th>
                         </tr>
