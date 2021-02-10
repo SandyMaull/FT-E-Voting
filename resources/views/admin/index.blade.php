@@ -201,5 +201,9 @@
             data: donutData,
             options: donutOptions      
             });
+        // REFRESH PAGE EVERY 10 Seconds 
+            setTimeout(function() {
+                location.reload();
+            }, 10000);
     </script>
 @endsection

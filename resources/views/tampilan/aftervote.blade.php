@@ -37,8 +37,8 @@
         </script>
     @else
         <script>
-            setTimeout(function(){
-                window.location.href = 'https://evoting.ft.uts.ac.id/beranda';
+            setTimeout(function() {
+                document.getElementById('logout-form').submit();
             }, 3000);
         </script>    
     @endif

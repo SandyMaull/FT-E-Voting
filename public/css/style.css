@@ -56,6 +56,11 @@ html {
   margin-bottom: 1em;
 }
 
+.result-header, .result-body, .result-footer {
+  color: #34eb86;
+  text-align: center;
+}
+
 #tim_bem {
   display: -ms-grid;
   display: grid;

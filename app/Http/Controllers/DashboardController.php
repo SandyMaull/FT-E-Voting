@@ -15,7 +15,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('votingcheck')->except('home');
+        $this->middleware('votingcheck')->except('home', 'resultakhir');
         $this->middleware('guestvoters', ['only' => [
             'register_index', 'register_post', 'redirectLoginAfterRegis'
         ]]);
@@ -29,10 +29,33 @@ class DashboardController extends Controller
         return view('tampilan.layouts.app')->with('pageawal',TRUE);
     }
 
-    // public function resultakhir()
-    // {
-    //     $tim_bem = Tim::where('pemilihan', 'BEM')->get();
-    // }
+    public function resultakhir()
+    {
+        // $tim_bem = Tim::where('pemilihan', 'BEM')->get();
+        $dpmvotesdb = Kandidat::where('tim_id', 11)->get();
+        $looping = 1;
+        foreach ($dpmvotesdb as $dpm) {
+            $dpmtervote = Tervote::where('voting_dpm', $dpm->id)->count();
+            if ($dpmtervote) {
+                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+                $dpmvotesdata[$dpm->id] = [
+                    'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
+                    'vote' => $dpmtervote,
+                    'colors' => $colors,
+                ];
+            } else {
+                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+                $dpmvotesdata[$dpm->id] = [
+                    'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
+                    'vote' => 0,
+                    'colors' => $colors,
+                ];
+            }
+            $looping += 1;
+        }
+        // dd($dpmvotesdata);
+        return view('tampilan.result', ['dpmdata' => json_encode($dpmvotesdata)]);
+    }
 
     public function register_index()
     {
@@ -43,7 +66,7 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'nim' => 'required|max:13',
+            'nim' => 'required|max:13|min:13',
             'prodi' => 'required',
             'password' => 'required|min:8',
             'telp' => 'required',
@@ -52,7 +75,8 @@ class DashboardController extends Controller
         [
             'nama.required' => 'Kolom Nama dibutuhkan!',
             'nim.required' => 'Kolom NIM dibutuhkan!',
-            'nim.max' => 'Isi kolom NIM dgn Benar!',
+            'nim.max' => 'Isi kolom NIM dgn Benar! Contoh format NIM yang sesuai: 17.01.071.106',
+            'nim.min' => 'Isi kolom NIM dgn Benar! Contoh format NIM yang sesuai: 17.01.071.106',
             'prodi.required' => 'Kolom Prodi dibutuhkan!',
             'password.required' => 'Kolom Password dibutuhkan!',
             'password.min' => 'Password minimal 8 digit!',
@@ -114,59 +138,103 @@ class DashboardController extends Controller
             return redirect('/masuk');
         }
     }
+    // BERANDAROUTE 
+        // public function beranda()
+        // {
+        //     $tim_bem = Tim::where('pemilihan', 'BEM')->get();
+        //     $tim_dpm = Tim::where('pemilihan', 'DPM')->get();
+        //     $kandidat = Kandidat::all();
+        //     return view('tampilan.beranda', ['tim_dpm' => $tim_dpm, 'tim_bem' => $tim_bem, 'kandidat' => $kandidat])->with('bem', TRUE);
+        // }
 
     public function beranda()
     {
-        $tim_bem = Tim::where('pemilihan', 'BEM')->get();
         $tim_dpm = Tim::where('pemilihan', 'DPM')->get();
         $kandidat = Kandidat::all();
-        return view('tampilan.beranda', ['tim_dpm' => $tim_dpm, 'tim_bem' => $tim_bem, 'kandidat' => $kandidat])->with('bem', TRUE);
+        return view('tampilan.beranda2', ['tim_dpm' => $tim_dpm, 'kandidat' => $kandidat])->with('dpm', TRUE);
     }
+    // PILIHBEMROUTE 
+        // public function pilihbem(Request $request)
+        // {
+        //     $request->validate([
+        //         'pilihan' => 'required',
+        //         'pemilihID' => 'required',
+        //     ],
+        //     [
+        //         'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        //         'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        //     ]);
+        //     $bemvote = $request->pilihan;
+        //     $votersID = $request->pemilihID;
+        //     return redirect(route('beranda'))->with(['bemvote' => $bemvote, 'votersID' => $votersID, 'dpm' => TRUE, 'bem' => FALSE]);
+        // }
+    // PILIHDPMROUTE 
+        // public function pilihdpm(Request $request)
+        // {
+        //     $request->validate([
+        //         'bemvote' => 'required',
+        //         'pilihan' => 'required',
+        //         'pemilihID' => 'required',
+        //     ],
+        //     [
+        //         'bemvote.required' => 'ERROR, BEMVOTE TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        //         'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        //         'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
+        //     ]);
+        //     $finalvote = new Tervote;
+        //     $finalvote->tim_id = $request->bemvote;
+        //     $finalvote->voting_dpm = $request->pilihan;
+        //     $finalvote->voters_id = $request->pemilihID;
+        //     $savevote = $finalvote->save();
 
-    public function pilihbem(Request $request)
+        //     $hasvote = Voters::where('id', $request->pemilihID)->first();
+        //     $votersudpate = $hasvote->update([
+        //         'has_vote' => 1,
+        //     ]);
+
+        //     if($savevote && $votersudpate) {
+        //         return redirect(route('aftervote'))->with('pageakhir',TRUE);
+        //     }
+        //     else {
+        //         return redirect(route('beranda'))->with(['status' => 'error','message' => ' Data Gagal Ditambah, Hubungi Administrator!.']);
+        //     }
+        // }
+
+    public function pilih(Request $request)
     {
         $request->validate([
+            // 'bemvote' => 'required',
             'pilihan' => 'required',
             'pemilihID' => 'required',
         ],
         [
+            // 'bemvote.required' => 'ERROR, BEMVOTE TIDAK DAPAT DI COLLECT OLEH SISTEM!',
             'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
             'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
         ]);
-        $bemvote = $request->pilihan;
-        $votersID = $request->pemilihID;
-        return redirect(route('beranda'))->with(['bemvote' => $bemvote, 'votersID' => $votersID, 'dpm' => TRUE, 'bem' => FALSE]);
-    }
-
-    public function pilihdpm(Request $request)
-    {
-        $request->validate([
-            'bemvote' => 'required',
-            'pilihan' => 'required',
-            'pemilihID' => 'required',
-        ],
-        [
-            'bemvote.required' => 'ERROR, BEMVOTE TIDAK DAPAT DI COLLECT OLEH SISTEM!',
-            'pilihan.required' => 'ERROR, PILIHAN ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
-            'pemilihID.required' => 'ERROR, PEMILIH ID TIDAK DAPAT DI COLLECT OLEH SISTEM!',
-        ]);
-        $finalvote = new Tervote;
-        $finalvote->tim_id = $request->bemvote;
-        $finalvote->voting_dpm = $request->pilihan;
-        $finalvote->voters_id = $request->pemilihID;
-        $savevote = $finalvote->save();
-
-        $hasvote = Voters::where('id', $request->pemilihID)->first();
-        $votersudpate = $hasvote->update([
-            'has_vote' => 1,
-        ]);
-
-        if($savevote && $votersudpate) {
-            return redirect(route('aftervote'))->with('pageakhir',TRUE);
+        if ($request->bemvote == null) {
+            $finalvote = new Tervote;
+            $finalvote->tim_id = '6';
+            $finalvote->voting_dpm = $request->pilihan;
+            $finalvote->voters_id = $request->pemilihID;
+            $savevote = $finalvote->save();
+    
+            $hasvote = Voters::where('id', $request->pemilihID)->first();
+            $votersudpate = $hasvote->update([
+                'has_vote' => 1,
+            ]);
+    
+            if($savevote && $votersudpate) {
+                return redirect(route('aftervote'))->with('pageakhir',TRUE);
+            }
+            else {
+                return redirect(route('beranda'))->with(['status' => 'error','message' => ' Data Gagal Ditambah, Hubungi Administrator!.']);
+            }
         }
         else {
             return redirect(route('beranda'))->with(['status' => 'error','message' => ' Data Gagal Ditambah, Hubungi Administrator!.']);
         }
+
     }
 
     public function telahmemilih()

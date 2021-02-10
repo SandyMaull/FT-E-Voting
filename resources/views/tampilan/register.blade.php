@@ -57,7 +57,7 @@
                         <h5 for="SiakadFoto">Foto Siakad</h5>
                         <button id="upload_button" style="display: none; border: 0px; background: #FFF; border-radius: 5px; color: #495057; padding: 5px;">Pilih Gambar</button>
                         <input type="file" class="form-control-file form-control-sm" name="siakadfoto" data-role="file" id="SiakadFoto" placeholder="Foto Siakad" aria-describedby="SiakadFoto_Help" accept="image/png,image/x-png,image/jpg,image/jpeg">
-                        <small id="SiakadFoto_Help" class="form-text text-muted">Masukan Screenshot/Foto Profil Siakad Lengkap (Max: 2MB)</small>
+                        <small id="SiakadFoto_Help" class="form-text text-muted">Masukan Screenshot KRS Siakad Semester Ini (Max: 2MB)</small>
                     </div>
                 </div>
             </div>

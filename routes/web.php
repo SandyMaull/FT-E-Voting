@@ -22,14 +22,15 @@ Auth::routes([
 
 // User Controller
 Route::get('/', 'DashboardController@home')->name('home');
-// Route::get('/result', 'DashboardController@resultakhir')->name('result');
+Route::get('/result', 'DashboardController@resultakhir')->name('result');
 Route::get('/masuk', 'Auth\VotersLoginController@showLoginForm')->name('masuk')->middleware('votingcheck');
 Route::get('/masuk/{token}', 'DashboardController@redirectLoginAfterRegis')->middleware('votingcheck');
 Route::post('/masuk2', 'Auth\VotersLoginController@login');
 Route::post('/logout2', 'Auth\VotersLoginController@logout')->name('logoutvoters');
 Route::get('/beranda', 'DashboardController@beranda')->name('beranda');
-Route::post('/beranda/pilihbem', 'DashboardController@pilihbem');
-Route::post('/beranda/pilihdpm', 'DashboardController@pilihdpm');
+// Route::post('/beranda/pilihbem', 'DashboardController@pilihbem');
+// Route::post('/beranda/pilihdpm', 'DashboardController@pilihdpm');
+Route::post('/beranda/pilih', 'DashboardController@pilih');
 Route::get('/beranda/telahmemilih', 'DashboardController@telahmemilih')->name('aftervote');
 Route::get('/register', 'DashboardController@register_index')->name('register');
 Route::post('/register_post', 'DashboardController@register_post');
