@@ -54,7 +54,7 @@
                         <small id="NoTelp_Help" class="form-text text-muted">Untuk verifikasi Token, format pengisian: 6282260879023</small>
                     </div>
                     <div class="form-group" style="display: inline-block">
-                        <h5 for="SiakadFoto">Foto Siakad</h5>
+                        <h5 for="SiakadFoto">Foto KRS</h5>
                         <button id="upload_button" style="display: none; border: 0px; background: #FFF; border-radius: 5px; color: #495057; padding: 5px;">Pilih Gambar</button>
                         <input type="file" class="form-control-file form-control-sm" name="siakadfoto" data-role="file" id="SiakadFoto" placeholder="Foto Siakad" aria-describedby="SiakadFoto_Help" accept="image/png,image/x-png,image/jpg,image/jpeg">
                         <small id="SiakadFoto_Help" class="form-text text-muted">Masukan Screenshot KRS Siakad Semester Ini (Max: 2MB)</small>
