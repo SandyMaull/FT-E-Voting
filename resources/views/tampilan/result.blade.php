@@ -91,11 +91,11 @@
                 maintainAspectRatio : false,
                 responsive : true,
                 tooltips: {
-                    enabled: false
+                    enabled: true
                 },
                 plugins: {
                     labels: {
-                        render: 'value',
+                        render: 'percentage',
                         fontColor: fontsdpm1,
                         precision: 2
                     }
@@ -122,11 +122,11 @@
                 maintainAspectRatio : false,
                 responsive : true,
                 tooltips: {
-                    enabled: false
+                    enabled: true
                 },
                 plugins: {
                     labels: {
-                        render: 'value',
+                        render: 'percentage',
                         fontColor: fontsdpm2,
                         precision: 2
                     }
