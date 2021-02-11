@@ -62,8 +62,8 @@
                             <div class="bem_bagian">
                                 <div class="info infoconte">
                                     <blockquote class="blockquote text-center">
-                                        Jurusan ini tak memiliki kandidat calon!
-                                        <footer class="blockquote-footer">Jurusan ini sedang tak baik - baik saja</footer>
+                                        Jurusan ini tak memiliki calon kandidat!
+                                        {{-- <footer class="blockquote-footer">Jurusan ini sedang tak baik - baik saja</footer> --}}
                                         <br><br>
                                         <small>Halaman ini akan terredirect setelah 7 detik ...</small>
                                 </blockquote>

@@ -36,18 +36,20 @@ class DashboardController extends Controller
         $looping = 1;
         foreach ($dpmvotesdb as $dpm) {
             $dpmtervote = Tervote::where('voting_dpm', $dpm->id)->count();
+            $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
             if ($dpmtervote) {
-                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
                 $dpmvotesdata[$dpm->id] = [
                     'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
                     'vote' => $dpmtervote,
+                    'jurusan' => $dpm->jurusan,
                     'colors' => $colors,
                 ];
             } else {
-                $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+                // $colors = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
                 $dpmvotesdata[$dpm->id] = [
                     'nama' => $dpm->nama . ' - ' . $dpm->jurusan,
                     'vote' => 0,
+                    // 'jurusan' => $dpm->jurusan,
                     'colors' => $colors,
                 ];
             }
